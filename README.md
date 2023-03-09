@@ -14,7 +14,7 @@ Una vez finalice, ejecute el siguiente comando que, crea un enlace símbolico de
 sudo ln -s ~/.vimrc ~/.config/vim/
 ```
 
-Ahora abra el archivo y reemplace el contenido por este [.vimrc](https://github.com/josuerom/vim-linux/blob/main/vim/.vimrc) que es mi archivo
+Ahora abra el archivo y reemplace el contenido por este [.vimrc](https://github.com/josuerom/vim-linux/blob/main/.vimrc) que es mi archivo
 ```bash
 cd ~/.config/vim/ && git clone https://github.com/josuerom/vim-linux.git
 ```
