@@ -1,6 +1,6 @@
 # Configuración básica de VIM 9.0 para Linux
 
-Antes de continuar usted deberá tener instalado obviamente: *vim, nodejs y git*.
+Antes de continuar usted deberá tener instalado obviamente: **vim, nodejs y git**.
 
 Luego copie y pegue el siguiente comando en su terminal para que pueda más adelante instalarle complementos a vim
 
@@ -29,4 +29,4 @@ Instale los plugins, para ello presione la tecla : seguido escriba PlugInstall y
 
 Por último, cierre e inicie vim.
 
-#### Si realizó todos los pasos que índique correctamente, habrá terminado con la configuración.
+#### Si realizó los pasos que compartí correctamente, habrá terminado con la configuración y personalizaci.
