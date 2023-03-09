@@ -27,6 +27,6 @@ vim .vimrc
 Instale los plugins, para ello presione la tecla : seguido escriba PlugInstall y presione enter. De la siguiente manera
 > :PlugInstall
 
-Por último, cierre e inicie vim.
+Por último, debe cerrar e iniciar vim para visualizar el nuevo aspecto.
 
-#### Si realizó los pasos que compartí correctamente, habrá terminado con la configuración y personalizaci.
+#### Si realizó los pasos que compartí correctamente, habrá terminado con la configuración y personalización.
