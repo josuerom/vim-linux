@@ -1,6 +1,6 @@
 # Configuración básica de VIM 9.0 para Linux
 
-Antes de continuar usted deberá tener instalado: Nodejs y Git.
+Antes de continuar usted deberá tener instalado obviamente: *vim, nodejs y git*.
 
 Luego copie y pegue el siguiente comando en su terminal para que pueda más adelante instalarle complementos a vim
 
@@ -16,7 +16,7 @@ sudo ln -s ~/.vimrc ~/.config/vim/
 
 Ahora abra el archivo y reemplace el contenido por este [.vimrc](https://github.com/josuerom/vim-linux/blob/main/vim/.vimrc) que es mi archivo
 ```bash
-cd ~/.config/vim/ &6 git clone https://github.com/josuerom/vim-linux.git
+cd ~/.config/vim/ && git clone https://github.com/josuerom/vim-linux.git
 ```
 
 Abra el archivo .vimrc que está en ~/.config/vim/
