@@ -11,58 +11,67 @@ endtry
 
 syntax enable
 set number
+set rnu
 set mouse=a
 set numberwidth=1
 set clipboard=unnamed
 set showcmd
+set showmatch
 set ruler
 set encoding=utf-8
 set sw=2
 set laststatus=2
 set noshowmode
+set background=dark
 
 autocmd FileType cpp :call RunCpp()
 autocmd FileType java :call RunJava()
 autocmd FileType py :call RunPython()
 autocmd FileType js :call RunJsAndTs()
-autocmd FileType ts :call RunJsAndTs()
 
 call plug#begin('~/.config/vim/plugins')
 
-Plug 'sheerun/vim-polyglot'
-Plug 'morhetz/gruvbox'
-Plug 'scrooloose/nerdtree'
+  Plug 'sheerun/vim-polyglot'
+  Plug 'morhetz/gruvbox'
+  Plug 'scrooloose/nerdtree'
+  Plug 'shinchu/lightline-gruvbox.vim'
+  Plug 'terryma/vim-multiple-cursors'
+  Plug 'junegunn/fzf.vim'
+  Plug 'junegunn/fzf/', {'do': {->fzf#install()}}
+  Plug 'preservim/nerdcommenter'
+  "Plug 'christoomey/vim-tmux-navigator'
 
 call plug#end()
 
-colorscheme gruvbox
 let g:gruvbox_contrast_dark='hard'
-let g:deoplete#enable_at_startup=1
-let g:jsx_ext_required=0
-
+let g:gruvbox_italic=1
+highlight Normal ctermbg=NONE
+colorscheme gruvbox
 let mapleader = " "
 
-nmap <Leader>w :w!<CR>
-imap <C-s> <Esc> :w!<CR>
-nmap <Leader>q :q!<CR>
+nmap <C-s> :w<CR>
+imap <C-s> <Esc> :w<CR>
+nmap <C-q> :q!<CR>
 imap <C-q> <Esc> :q!<CR>
 
 imap <C-c> <Esc>
 nmap > 5<C-w>>
 nmap < 5<C-w><
 
-nmap <F3> :%y+<CR>
+nmap <C-a> :%y+<CR>
 nmap <Leader>e :NERDTreeToggle<CR>
 let NERDTreeQuitOnOpen=1
+let NERDTreeWinPos='right'
 
-nmap <C-t> :terminal<CR> :resize 13<CR>
-nmap <C-l> :bnext<CR>
-nmap <C-d> :bdelete<CR>
+nmap <C-n> :bnext<CR>
+nmap <C-w> :bdelete<CR>
 
 vmap < <gv
 vmap > >gv
 nmap n :m .-2<CR>==
 nmap m :m .+1<CR>==
+xnoremap K :move '<-2<CR>gv-gv
+xnoremap J :move '>+1<CR>gv-gv
 
 nmap <Leader>pi :PlugInstall<CR>
 nmap <Leader>pc :PlugClean<CR>
@@ -80,11 +89,46 @@ function! RunCpp()
 endfunction
 
 function! RunPython()
-   imap <F2> <Esc> :w<CR> :!python % && < inp<CR>
-   nmap <F2> :w<CR> :!python % && < inp<CR>
+   imap <F2> <Esc> :w<CR> :!python3 % < inp<CR>
+   nmap <F2> :w<CR> :!python3 % < inp<CR>
 endfunction
 
 function! RunJsAndTs()
    imap <F2> <Esc> :w<CR> :!node %<CR>
    nmap <F2> :w<CR> :!node %<CR>
 endfunction
+
+function! OpenTerminal()
+   execute "normal \<C-l>"
+   execute "normal \<C-l>"
+   execute "normal \<C-l>"
+   execute "normal \<C-l>"
+
+   let bufNum = bufnr("%")
+   let bufType = getbufvar(bufNum, "&buftype", "not found")
+
+   if bufType == "terminal"
+     " cerrar terminal existente
+     execute "q"
+   else
+     " se abrirá la terminal cmd, pero si usted utiliza otra terminal, debes
+     " poner el nombre del .exe o ejecutable ya sea: 'cmd, zsh, bash, iTerm', quedando la
+     " línea (81) así: execute 'sp term://zsh'
+     execute "sp term://bash"
+     " apagar números
+     execute "set nonu"
+     execute "set nornu"
+
+     " alternar insertar en entrar o salir
+     silent au BufLeave <buffer> stopinsert!
+     silent au BufWinEnter,WinEnter <buffer> startinsert!
+
+     " establezco atajos dentro de la terminal
+     execute "tnoremap <buffer> <Esc> <C-\\><C-n><C-w><C-h>"
+     execute "tnoremap <buffer> <C-t> <C-\\><C-n>:q<CR>"
+     execute "tnoremap <buffer> <C-7> <C-\\><C-\\><C-n>"
+     startinsert!
+   endif
+endfunction
+
+nmap <C-t> :call OpenTerminal()<CR>
