@@ -1,3 +1,4 @@
+" author: josuerom date: 09/03/23 14:21
 syntax enable
 set number
 set rnu
@@ -18,19 +19,11 @@ set incsearch
 set ignorecase
 set smartcase
 set background=dark
-set splitright
 
 autocmd FileType cpp :call RunCpp()
 autocmd FileType java :call RunJava()
 autocmd FileType python :call RunPython()
 autocmd FileType javascript :call RunJsAndTs()
-
-if empty(glob('~/.config/nvim/autoload/plug.vim'))
-  silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  autocmd VimEnter * PlugInstall
-  autocmd VimEnter * PlugInstall | source $MYVIMRC
-endif
 
 call plug#begin('~/.config/nvim/plugins')
 
@@ -38,12 +31,13 @@ call plug#begin('~/.config/nvim/plugins')
   Plug 'morhetz/gruvbox'
   Plug 'scrooloose/nerdtree'
   Plug 'shinchu/lightline-gruvbox.vim'
+  Plug 'itchyny/lightline.vim'
   Plug 'terryma/vim-multiple-cursors'
   Plug 'preservim/nerdcommenter'
   Plug 'jiangmiao/auto-pairs'
   Plug 'christoomey/vim-tmux-navigator'
   Plug 'junegunn/fzf.vim'
-  Plug 'junegunn/fzf', {'do': {-> fzf#install()}}
+  Plug 'junegunn/fzf', {'do': {->fzf#install()}}
 
 call plug#end()
 
