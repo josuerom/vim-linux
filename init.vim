@@ -1,4 +1,3 @@
-" author: josuerom date: 09/03/23 14:21
 syntax enable
 set number
 set rnu
@@ -82,7 +81,7 @@ inoremap <C-s> <Esc> :w<CR>
 nnoremap <C-q> :q!<CR>
 inoremap <C-q> <Esc> :q!<CR>
 nnoremap <C-w> :bdelete<CR>
-nnoremap <C-n> :bnext<CR>
+nnoremap <Leader>l :bnext<CR>
 
 nnoremap <C-a> :%y+<CR>
 nnoremap <Leader>e :NERDTreeToggle<CR>
