@@ -114,6 +114,11 @@ function! RunCpp()
    nmap <F2> :w<CR> :!g++ -std=c++20 -DONPC -Wall -O2 -o %< % && .//%< < inp<CR>
 endfunction
 
+function! RunC()
+   imap <F2> <Esc> :w<CR> :!gcc -std=gnu17 -DONPC -Wall -O2 -o "%<" "%" && ".//%<" < inp<CR>
+   nmap <F2> :w<CR> :!gcc -std=gnu17 -DONPC -Wall -O2 -o %< % && .//%< < inp<CR>
+endfunction
+
 function! RunPython()
    imap <F2> <Esc> :w<CR> :!python3 % < inp<CR>
    nmap <F2> :w<CR> :!python3 % < inp<CR>
