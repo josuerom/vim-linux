@@ -1,4 +1,4 @@
-" author: josuerom @date: 07/02/23
+" author: josuerom @date: 07/02/22
 set runtimepath+=~/.vim_runtime
 source ~/.vim_runtime/vimrcs/basic.vim
 source ~/.vim_runtime/vimrcs/filetypes.vim
@@ -27,8 +27,8 @@ set background=dark
 
 autocmd FileType cpp :call RunCpp()
 autocmd FileType java :call RunJava()
-autocmd FileType py :call RunPython()
-autocmd FileType js :call RunJsAndTs()
+autocmd FileType python :call RunPython()
+autocmd FileType javascript,typescript :call RunJsAndTs()
 
 call plug#begin('~/.config/vim/plugins')
 
@@ -37,7 +37,6 @@ call plug#begin('~/.config/vim/plugins')
    Plug 'shinchu/lightline-gruvbox.vim'
    Plug 'itchyny/lightline.vim'
    Plug 'scrooloose/nerdtree'
-   Plug 'ryanoasis/vim-devicons'
    Plug 'easymotion/vim-easymotion'
    Plug 'christoomey/vim-tmux-navigator'
    Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -46,7 +45,6 @@ call plug#begin('~/.config/vim/plugins')
    Plug 'junegunn/fzf', {'do': {-> fzf#install()}}
    Plug 'junegunn/fzf.vim'
    Plug 'jiangmiao/auto-pairs'
-   Plug 'yggdroot/indentline'
 
 call plug#end()
 
