@@ -37,13 +37,7 @@ set cmdheight=1
 set updatetime=50
 set shortmess+=c
 
-autocmd BufWritePre * :%s/\s\+$//e
-autocmd FileType java :call RunJava()
-autocmd FileType cpp :call RunCpp()
-autocmd FileType python :call RunPython()
-autocmd FileType javascript,typescript :call RunJsAndTs()
-
-call plug#begin('~/.config/nvim/plugins')
+call plug#begin('~/.config/nvim/plugged')
 
   Plug 'sheerun/vim-polyglot'
   Plug 'morhetz/gruvbox'
@@ -154,16 +148,20 @@ endfunction
 
 let mapleader = " "
 
+" refrescar las sugerencias para C++
 autocmd FileType cpp setlocal omnifunc=coc#refresh()
 " comando para autocargar mi template en archivos cpp y java
 autocmd BufNewFile *.cpp 0r ~/workspace/templates/template.cpp
 autocmd BufNewFile *.java 0r ~/workspace/templates/template.java
 
-" comando para copiar en el portapapeles de Windows
+" comando para copiar en al portapapeles de Windows
 if has('clipboard')
   set clipboard+=unnamedplus
 endif
-vnoremap <C-c> "+y "suplanta al +y por C-c
+" suplanta al +y por C-c
+vnoremap <C-c> "+y
+" para copiar todo el archivo C-a
+nnoremap <C-a> <Esc>ggVG<CR>
 
 " FUNCIONES PARA COMPILACIONES
 function! CompileCpp()
@@ -225,14 +223,12 @@ function! Compile&RunJava()
     endif
 endfunction
 
-" Atajos de teclado para llamar a las funciones
+" Atajos de teclado para llamar a los compiladores
 autocmd FileType cpp nnoremap <silent><F1> :call CompileCpp()<CR>
 autocmd FileType cpp nnoremap <silent><F2> :call RunCpp()<CR>
 autocmd FileType cpp nnoremap <silent><F3> :call Compile&RunCpp()<CR>
 autocmd FileType java nnoremap <silent><F3> :call Compile&RunJava()<CR>
-
-" para copiar todo el archivo
-nnoremap <C-a> <Esc>ggVG<CR>
+autocmd BufWritePre * :%s/\s\+$//e
 
 noremap <up> <nop>
 noremap <down> <nop>
@@ -307,13 +303,6 @@ nnoremap <Leader>pp :PlugUpgrade<CR>
 vnoremap < <gv
 vnoremap > >gv
 
-" para multiples cursores debe poner el cursor encima de una palabra y presionar
-" <ctrl+n> para buscar las coincidencias en el archivo y luego presione <c>
-" para editar el contenido seleccionado
-
-" para agrupar una cadena de texto con cualquier simbolo ya sea: () [] {} '' ""
-" debes selecionar la palabra hasta un carácter antes y presionar: <s+el-simbolo-a-usar>
-" por ejemplo: <s+[>
 xmap s <Plug>VSurround
 
 xnoremap K :move '<-2<CR>gv-gv
@@ -322,15 +311,20 @@ xnoremap J :move '>+1<CR>gv-gv
 nnoremap n :m .-2<CR>==
 nnoremap m :m .+1<CR>==
 
-" Para camiar el carácter que contenga una cadena de texto o cambiar el carácteres que los contiene,
-" por ejemplo: si tienes un: 'Hi! World' al presionar <cs+el-simbolo-a-usar> la cadena de carácteres
-" que los agrupa magicamente se cambiaran sin necesidad de realizarlo manualmente
-
 nnoremap <silent><nowait> <F12> :<C-u>CocList snippets<CR>
 nnoremap <silent><nowait> <Leader>cup :<C-u>CocUpdate<CR>
 nnoremap <silent><nowait> <Leader>cun :<C-u>CocUninstall coc-
 
-" NOTA: para que mi configuración le funcione correctamente y no inicie con errores.
-" USTED DEBE INSTALAR las siguientes 6 herramientas:
-"   git nodejs python3 npm yarn
-" Y vim-plug --> https://github.com/junegunn/vim-plug
+" dashboard.vim
+" Limpia la pantalla
+autocmd VimEnter * silent! colorscheme default | silent! filetype plugin indent off | silent! syntax off | silent! set noswapfile | silent! set nobackup | silent! set noundofile | silent! set nowrap
+" Define la función para mostrar el dashboard
+function! ViewWelcome()
+    " Limpia el buffer actual y carga el archivo con el saludo
+    silent! %bwipeout!
+    silent! 0read ~/.config/nvim/welcome.txt
+    set laststatus=0
+endfunction
+
+" Muestra el dashboard al iniciar Neovim
+autocmd VimEnter * call ViewWelcome()
