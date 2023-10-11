@@ -10,6 +10,7 @@
 "                             Twitter >> https://twitter.com/josueromr
 
 syntax enable
+set encoding=utf-8 
 set number
 set mouse=a
 set numberwidth=1
@@ -18,6 +19,9 @@ set clipboard=unnamedplus
 set background=dark
 set ruler
 set sw=3
+set tabstop=3
+set expandtab
+set smartindent
 set termguicolors
 set showmatch
 set showcmd
@@ -38,7 +42,6 @@ autocmd FileType java :call RunJava()
 autocmd FileType cpp :call RunCpp()
 autocmd FileType python :call RunPython()
 autocmd FileType javascript,typescript :call RunJsAndTs()
-"autocmd FileType <languaje> :call <name_function>()
 
 call plug#begin('~/.config/nvim/plugins')
 
@@ -48,7 +51,6 @@ call plug#begin('~/.config/nvim/plugins')
   Plug 'itchyny/lightline.vim'
   Plug 'scrooloose/nerdtree'
   Plug 'ryanoasis/vim-devicons'
-  Plug 'easymotion/vim-easymotion'
   Plug 'tpope/vim-surround'
   Plug 'christoomey/vim-tmux-navigator'
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -58,7 +60,6 @@ call plug#begin('~/.config/nvim/plugins')
   Plug 'junegunn/fzf', {'do': {-> fzf#install()}}
   Plug 'junegunn/fzf.vim'
   Plug 'jiangmiao/auto-pairs'
-  Plug 'yggdroot/indentline'
 
 call plug#end()
 
@@ -91,7 +92,7 @@ let g:lightline = {
     \ }
     \}
 
-let g:coc_global_extensions = ['coc-snippets', 'coc-java']
+let g:coc_global_extensions = ['coc-snippets', 'coc-java', 'coc-clangd']
 
 " configuración de coc-snippets
 let g:coc_snippets_next = '<c-j>'
@@ -153,39 +154,85 @@ endfunction
 
 let mapleader = " "
 
-function! RunJava()
-   imap <F2> <Esc> :w<CR> :!java % < ~/workspace/sample/input<CR>
-   nmap <F2> :w<CR> :!java % < ~/workspace/sample/input<CR>
-   nmap <F3> :w<CR> :!cd %:h<CR> :terminal<CR>ils<CR>java
+autocmd FileType cpp setlocal omnifunc=coc#refresh()
+" comando para autocargar mi template en archivos cpp y java
+autocmd BufNewFile *.cpp 0r ~/workspace/templates/template.cpp
+autocmd BufNewFile *.java 0r ~/workspace/templates/template.java
+
+" comando para copiar en el portapapeles de Windows
+if has('clipboard')
+  set clipboard+=unnamedplus
+endif
+vnoremap <C-c> "+y "suplanta al +y por C-c
+
+" FUNCIONES PARA COMPILACIONES
+function! CompileCpp()
+    let program_name = expand('%:r') . '.out'
+    let compile_command = 'g++ -std=c++17 -Wall -Djosuerom -D_2BITS -pedantic ' . expand('%') . ' -o ~/workspace/bin/' . program_name
+    " Compilar el programa
+    let compile_output = systemlist(compile_command)
+    " Verificar si hubo errores de compilación
+    if v:shell_error
+        echohl ErrorMsg
+        echo 'Error de compilación:'
+        for error_line in compile_output
+            echo error_line
+        endfor
+        echohl None
+    else
+        echo 'Compilacion exitosa!'
+    endif
 endfunction
 
 function! RunCpp()
-   imap <F1> <Esc> :w<CR> :!g++ % -o ~/workspace/build/sol.out -Wall -Wextra -Wpedantic -Werror -Djosuerom<CR>
-   nmap <F1> :w<CR> :!g++ % -o ~/workspace/build/sol.out -Wall -Wextra -Wpedantic -Werror -Djosuerom<CR>
+    let program_name = expand('%:r')  . '.out'
+    let run_command = '~/workspace/bin/' . program_name
 
-   imap <F2> <Esc> :w<CR> :!~/workspace/build/sol.out < ~/workspace/sample/input<CR>
-   nmap <F2> :w<CR> :!~/workspace/build/sol.out < ~/workspace/sample/input<CR>
-   nmap <F3> :w<CR> :cd ~/workspace/build/<CR> :terminal<CR>i./sol.out<CR>
+    " Ejecutar el programa en una división vertical de la terminal
+    leftabove vsplit term://./%:r
+    "execute 'terminal ' . run_command . '< samples/in1'
+    execute 'terminal time ' . run_command
+    startinsert
 endfunction
 
-function! RunPython()
-   imap <F2> <Esc> :w<CR> :!python3 % < ~/workspace/sample/input<CR>
-   nmap <F2> :w<CR> :!python3 % < ~/workspace/sample/input<CR>
-   nmap <F3> :w<CR> :!cd %:h<CR> :terminal<CR>ils<CR>python3
+function! Compile&RunCpp()
+    call CompileCpp()
+    if !v:shell_error
+        call RunCpp()
+    endif
 endfunction
 
-function! RunJsAndTs()
-   imap <F1> <Esc> :w<CR> :!node %<CR>
-   nmap <F1> :w<CR> :!node %<CR>
-
-   imap <F2> <Esc> :w<CR> :!node % < ~/workspace/sample/input<CR>
-   nmap <F2> :w<CR> :!node % < ~/workspace/sample/input<CR>
-   nmap <F3> :w<CR> :!cd %:h<CR> :terminal<CR>ils<CR>node
+function! Compile&RunJava()
+    let program_name = expand('%:r')
+    let run_command = 'java ' . program_name
+    " Compilar el programa
+    let compile_output = systemlist(run_command)
+    " Verificar si hubo errores de compilación
+    if v:shell_error
+        echohl ErrorMsg
+        echo 'Error de compilación:'
+        for error_line in compile_output
+            echo error_line
+        endfor
+        echohl None
+    else
+        echo 'Compilación exitosa!'
+        " Ejecutar el programa en una división vertical de la terminal
+        leftabove vsplit term://./%:r
+        "execute 'terminal ' . run_command . '< samples/in1'
+        execute 'terminal time ' . run_command
+        startinsert
+    endif
 endfunction
 
-"function! RunLanguage()
-"   mode <key> <Esc> command<CR>
-"endfunction
+" Atajos de teclado para llamar a las funciones
+autocmd FileType cpp nnoremap <silent><F1> :call CompileCpp()<CR>
+autocmd FileType cpp nnoremap <silent><F2> :call RunCpp()<CR>
+autocmd FileType cpp nnoremap <silent><F3> :call Compile&RunCpp()<CR>
+autocmd FileType java nnoremap <silent><F3> :call Compile&RunJava()<CR>
+
+" para copiar todo el archivo
+nnoremap <C-a> <Esc>ggVG<CR>
 
 noremap <up> <nop>
 noremap <down> <nop>
